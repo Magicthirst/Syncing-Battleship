@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Version>0.0.0</Version>
+        <Authors>yoloroy</Authors>
+        <Company>yoloroy</Company>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Syncing_Battleship_Common_Typing\Syncing_Battleship_Common_Typing.csproj" />
+      <ProjectReference Include="..\Util\Util.csproj" />
+    </ItemGroup>
+
+</Project>
