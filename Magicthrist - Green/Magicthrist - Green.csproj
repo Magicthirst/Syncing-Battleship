@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <RootNamespace>Magicthrist___Green</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Magicthrist___Green</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Syncing_Battleship_Common_Typing\Syncing_Battleship_Common_Typing.csproj" />
+        <ProjectReference Include="..\Util\Util.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="RiptideNetworking.Riptide" Version="2.2.0" />
+    </ItemGroup>
+
+</Project>

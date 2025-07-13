@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run with Magicthirst Behaviour" type="DotNetProject" factoryName=".NET Project">
+    <option name="EXE_PATH" value="$PROJECT_DIR$/Syncing_Battleship/bin/Debug/net9.0/Syncing_Battleship.exe" />
+    <option name="PROGRAM_PARAMETERS" value="&quot;Magicthrist - Green/bin/Debug/net9.0/Magicthrist___Green.dll&quot; &quot;Magicthrist___Green.MagicthirstDataBehaviour&quot;" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
+    <option name="PASS_PARENT_ENVS" value="0" />
+    <option name="USE_EXTERNAL_CONSOLE" value="0" />
+    <option name="USE_MONO" value="0" />
+    <option name="RUNTIME_ARGUMENTS" value="" />
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/Syncing_Battleship/Syncing_Battleship.csproj" />
+    <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+    <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+    <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="0" />
+    <option name="PROJECT_KIND" value="DotNetCore" />
+    <option name="PROJECT_TFM" value="net9.0" />
+    <method v="2">
+      <option name="Build" default="false" projectName="Magicthrist - Green" projectPath="$PROJECT_DIR$/Magicthrist - Green/Magicthrist - Green.csproj" />
+      <option name="Build" default="false" projectName="Syncing_Battleship" projectPath="$PROJECT_DIR$/Syncing_Battleship/Syncing_Battleship.csproj" />
+    </method>
+  </configuration>
+</component>
