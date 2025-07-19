@@ -25,10 +25,4 @@ public class JPongDataBehaviour : IDataBehaviour
         snapshot.AddGameState(src, mask);
         return true;
     }
-
-    public bool TryExtractCommand(Message message, int sender, object state, out Message command)
-    {
-        command = message;
-        return false;
-    }
 }

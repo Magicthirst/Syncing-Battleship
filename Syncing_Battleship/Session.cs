@@ -62,7 +62,15 @@ public class Session
             sotId = connection.Id;
         }
 
-        connection.Send(ReliableMessage(Accepted));
+        if (behaviour.TryApplyNewPlayerConnection(connection.Id, state, out var _))
+        {
+            connection.Send(ReliableMessage(Accepted));
+        }
+        else
+        {
+            connection.Send(ReliableMessage(Error));
+        }
+
         Reinit();
     }
 
@@ -87,12 +95,13 @@ public class Session
         }
         else if (mark.HasFlag(Command))
         {
-            if (behaviour.TryExtractCommand(message, connection.Id, state, out var command))
+            if (behaviour.TryExtractCommand(message, mark, connection.Id, state, out var command, out var update))
             {
                 SendToAll(
                     ReliableMessage(Command).AddMessage(command),
                     exceptConnection: connection
                 );
+                SendToAll(UnreliableMessage(Update).AddMessage(update));
             }
         }
     }

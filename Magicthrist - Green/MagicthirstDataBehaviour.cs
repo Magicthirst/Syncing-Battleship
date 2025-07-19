@@ -5,20 +5,22 @@ namespace Magicthrist___Green;
 
 public class MagicthirstDataBehaviour : IDataBehaviour
 {
-    public object DefaultState => throw new NotImplementedException();
+    public object DefaultState => new MagicthristGameState();
 
-    public Message FullMessageOf(object state)
-    {
-        throw new NotImplementedException();
-    }
+    public Message FullMessageOf(object state) => Message.Create();
 
-    public bool TryExtractCommand(Message message, int sender, object state, out Message command)
-    {
-        throw new NotImplementedException();
-    }
+    // public bool TryApplyNewPlayerConnection(int newPlayer, object state, out Message snapshot)
+    // {
+    //     throw new NotImplementedException();
+    // }
 
-    public bool TryApplyUpdate(Message message, int sender, object state, out Message snapshot)
-    {
-        throw new NotImplementedException();
-    }
+    // public bool TryApplyUpdate(Message message, int sender, object state, out Message snapshot)
+    // {
+    //     throw new NotImplementedException();
+    // }
+
+    // public bool TryExtractCommand(Message message, int sender, object state, out Message command)
+    // {
+    //     throw new NotImplementedException();
+    // }
 }

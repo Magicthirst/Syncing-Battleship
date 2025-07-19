@@ -8,7 +8,30 @@ public interface IDataBehaviour
 
     Message FullMessageOf(object state);
 
-    bool TryApplyUpdate(Message message, int sender, object state, out Message snapshot);
+    bool TryApplyUpdate(Message message, int sender, object state, out Message snapshot)
+    {
+        snapshot = message;
+        return false;
+    }
 
-    bool TryExtractCommand(Message message, int sender, object state, out Message command);
+    bool TryApplyNewPlayerConnection(int newPlayer, object state, out Message snapshot)
+    {
+        snapshot = Message.Create();
+        return false;
+    }
+
+    bool TryExtractCommand
+    (
+        Message message,
+        MessageMark mark,
+        int sender,
+        object state,
+        out Message command,
+        out Message snapshot
+    )
+    {
+        command = message;
+        snapshot = message;
+        return false;
+    }
 }
