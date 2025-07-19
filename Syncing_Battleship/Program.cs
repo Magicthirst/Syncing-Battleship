@@ -18,9 +18,9 @@ var sessions = new SessionsRouter
 var isRunning = true;
 
 var control = new ControlOutlet(port: 8765, sessions: sessions, stop: () => isRunning = false);
-var websockets = new WebsocketsHost(port: 8766, maxClients: 100, sessions: sessions);
+var riptide = new RiptideServer(port: 8766, maxClients: 100, sessions: sessions);
 
-websockets.Start();
+riptide.Start();
 control.Start();
 
 Console.WriteLine($"Main loop started, targeting {targetTicksPerSecond} ticks per second.");
@@ -46,12 +46,12 @@ while (isRunning)
     }
 
     lastTickTime = currentTime;
-    websockets.Update();
+    riptide.Update();
 }
 
 Console.WriteLine("\nShutting down...");
 control.WaitForShutdown();
-websockets.Stop();
+riptide.Stop();
 
 Console.WriteLine("Server shut down successfully.");
 return 0;

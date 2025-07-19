@@ -4,7 +4,7 @@ using Syncing_Battleship_Common_Typing;
 
 namespace Syncing_Battleship;
 
-public class WebsocketsHost
+public class RiptideServer
 (
     ushort port,
     ushort maxClients,
