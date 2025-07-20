@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Setup lowercase name
         run: |
-          echo "repository_owner_lowercased=$(echo ${{ github.repository_owner }} | tr ':upper:' ':lower:')" >> $GITHUB_ENV
+          echo "repository_owner_lowercased=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v4
