@@ -4,7 +4,7 @@ using Riptide.Utils;
 using Syncing_Battleship;
 
 const int targetTicksPerSecond = 30;
-const float millisecondsPerTick = 1000f / targetTicksPerSecond;
+var tickInterval = TimeSpan.FromSeconds(1.0 / targetTicksPerSecond);
 
 Console.Title = "Sync Service";
 
@@ -39,21 +39,19 @@ Console.CancelKeyPress += (_, e) =>
     isRunning = false;
 };
 
-var stopwatch = new Stopwatch();
-stopwatch.Start();
-var lastTickTime = 0.0;
+var tickStopwatch = new Stopwatch();
+tickStopwatch.Start();
 
 while (isRunning)
 {
-    double currentTime = stopwatch.Elapsed.TotalMilliseconds;
-    int sleepTimeMs = (int) (millisecondsPerTick - (currentTime - lastTickTime));
-    if (sleepTimeMs > 0)
+    var sleepTime = tickInterval - tickStopwatch.Elapsed;
+    if (sleepTime > TimeSpan.Zero)
     {
-        Thread.Sleep(sleepTimeMs);
+        Thread.Sleep(sleepTime);
     }
 
-    lastTickTime = currentTime;
     riptide.Update();
+    tickStopwatch.Restart();
 }
 
 RiptideLogger.Log(LogType.Info, "\nShutting down...");
