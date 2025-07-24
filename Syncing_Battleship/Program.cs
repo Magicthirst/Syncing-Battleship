@@ -1,11 +1,18 @@
 ﻿using System.Diagnostics;
 using Humanizer;
+using Riptide.Utils;
 using Syncing_Battleship;
 
 const int targetTicksPerSecond = 30;
-const float millisecondsPerTick = 1000f / targetTicksPerSecond;
+var tickInterval = TimeSpan.FromSeconds(1.0 / targetTicksPerSecond);
 
 Console.Title = "Sync Service";
+
+var riptideLogsFilePath = Environment.GetEnvironmentVariable("RIPTIDE_LOG");
+if (riptideLogsFilePath == null)
+{
+    throw new ArgumentException(nameof(riptideLogsFilePath));
+}
 
 var behaviourLoader = new BehaviourLoader(args);
 var sessions = new SessionsRouter
@@ -18,13 +25,13 @@ var sessions = new SessionsRouter
 var isRunning = true;
 
 var control = new ControlOutlet(port: 8765, sessions: sessions, stop: () => isRunning = false);
-var riptide = new RiptideServer(port: 8766, maxClients: 100, sessions: sessions);
+var riptide = new RiptideServer(port: 8766, maxClients: 100, sessions: sessions, logsPath: riptideLogsFilePath);
 
 riptide.Start();
 control.Start();
 
-Console.WriteLine($"Main loop started, targeting {targetTicksPerSecond} ticks per second.");
-Console.WriteLine("Press Ctrl+C to shut down the server gracefully.");
+RiptideLogger.Log(LogType.Info, $"Main loop started, targeting {targetTicksPerSecond} ticks per second.");
+RiptideLogger.Log(LogType.Info, "Press Ctrl+C to shut down the server gracefully.");
 
 Console.CancelKeyPress += (_, e) =>
 {
@@ -32,24 +39,22 @@ Console.CancelKeyPress += (_, e) =>
     isRunning = false;
 };
 
-var stopwatch = new Stopwatch();
-stopwatch.Start();
-var lastTickTime = 0.0;
+var tickStopwatch = new Stopwatch();
+tickStopwatch.Start();
 
 while (isRunning)
 {
-    double currentTime = stopwatch.Elapsed.TotalMilliseconds;
-    int sleepTimeMs = (int) (millisecondsPerTick - (currentTime - lastTickTime));
-    if (sleepTimeMs > 0)
+    var sleepTime = tickInterval - tickStopwatch.Elapsed;
+    if (sleepTime > TimeSpan.Zero)
     {
-        Thread.Sleep(sleepTimeMs);
+        Thread.Sleep(sleepTime);
     }
 
-    lastTickTime = currentTime;
     riptide.Update();
+    tickStopwatch.Restart();
 }
 
-Console.WriteLine("\nShutting down...");
+RiptideLogger.Log(LogType.Info, "\nShutting down...");
 control.WaitForShutdown();
 riptide.Stop();
 

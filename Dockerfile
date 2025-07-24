@@ -45,10 +45,10 @@ workdir /app
 copy --from=build-core /app/publish_exec .
 copy --from=build-behaviour /app/build_dll/Magicthrist___Green.dll .
 
-# SYNC
-expose 8765
 # OUTLET
-expose 8766
+expose 8765
+# SYNC
+expose 8766/udp
 
 entrypoint ["dotnet", "Syncing_Battleship.dll"]
 cmd ["Magicthrist___Green.dll", "Magicthrist___Green.MagicthirstDataBehaviour"]

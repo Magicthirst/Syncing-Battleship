@@ -1,4 +1,5 @@
 using Riptide;
+using Riptide.Utils;
 using Syncing_Battleship_Common_Typing;
 using Syncing_Battleship_gRPC_Outlet;
 using Util;
@@ -43,8 +44,11 @@ public class SessionsRouter
 
     public void Consume(Connection connection, Message message, MessageMark mark)
     {
+        RiptideLogger.Log(LogType.Debug, $"Connection={connection.Id}");
+        RiptideLogger.Log(LogType.Debug, $"Mark={MessageMarkSupply.DescriptionOf(mark)}");
         if (connectionsSessions.TryGetValue(connection, out var session))
         {
+            RiptideLogger.Log(LogType.Debug, "It is update message");
             session.Consume(connection, message, mark);
             return;
         }
@@ -52,6 +56,7 @@ public class SessionsRouter
         var messageCopy = Message.Create().AddMessage(message);
         if (!mark.HasFlag(Connected))
         {
+            RiptideLogger.Log(LogType.Debug, "It is not request for connection");
             connection.Send(Message.Create(MessageSendMode.Reliable, Error400));
             return;
         }
@@ -64,6 +69,7 @@ public class SessionsRouter
             return;
         }
 
+        RiptideLogger.Log(LogType.Debug, "It is Join message");
         connectionsSessions[connection] = session;
         session.Join(connection, messageCopy, mark);
     }

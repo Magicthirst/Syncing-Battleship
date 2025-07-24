@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using Riptide;
+using Riptide.Utils;
 using Syncing_Battleship_Common_Typing;
 using Util;
 using static Syncing_Battleship_Common_Typing.MessageMark;
@@ -48,7 +49,7 @@ public class Session
     {
         message.GetInt();
         var playerId = message.GetString();
-        if (players.TryGet(out var player, p => p.Id == playerId && p.Connection == null))
+        if (players.TryGet(out var player, p => p.Id == playerId))
         {
             player.Connection = connection;
         }
@@ -62,14 +63,12 @@ public class Session
             sotId = connection.Id;
         }
 
-        if (behaviour.TryApplyNewPlayerConnection(connection.Id, state, out var _))
+        if (behaviour.TryApplyNewPlayerConnection(connection.Id, state, out _))
         {
-            connection.Send(ReliableMessage(Accepted));
+            // TODO
         }
-        else
-        {
-            connection.Send(ReliableMessage(Error));
-        }
+        connection.Send(ReliableMessage(Accepted));
+        RiptideLogger.Log(LogType.Debug, $"Connection from {playerId} were Accepted");
 
         Reinit();
     }

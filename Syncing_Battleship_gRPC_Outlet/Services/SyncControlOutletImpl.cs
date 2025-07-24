@@ -1,5 +1,4 @@
 using Grpc.Core;
-using Syncing_Battleship_gRPC_Outlet;
 using static Syncing_Battleship_gRPC_Outlet.Services.SyncControlOutletImpl;
 
 namespace Syncing_Battleship_gRPC_Outlet.Services;
