@@ -1,0 +1,72 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  service-hosts:
+    image: ghcr.io/magicthirst/service_hosts:latest
+    container_name: service-hosts
+    volumes:
+      - volume_service_hosts:/app/data
+    environment:
+      - DB=/app/data/hosts.debug.json
+  #    ports:
+  #      - "8001:8000"
+
+  service-auth:
+    image: ghcr.io/magicthirst/service_auth:latest
+    container_name: service-auth
+    volumes:
+      - volume_service_auth:/app/data
+    environment:
+      - DB=/app/data/auth.debug.db
+  #    ports:
+  #      - "8002:8000"
+
+  service-sync:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: service-sync
+    volumes:
+      - volume_logs:/app/logs
+    environment:
+      - RIPTIDE_LOG=/app/logs/log.txt
+    ports:
+      - "8766:8766/udp"
+
+  service-gateway:
+    image: ghcr.io/magicthirst/service_gateway:latest
+    container_name: service-gateway
+    environment:
+      - HOSTS_URL=http://service-hosts:8000
+      - AUTH_URL=http://service-auth:8000
+      - SYNC_OUTLET_URL=service-sync:8765
+      - SYNC_MAIN_URL=192.168.0.96:8766
+    ports:
+      - "8000:8000"
+    depends_on:
+      service-sync:
+        condition: service_started
+        restart: true
+      service-hosts:
+        condition: service_started
+      service-auth:
+        condition: service_started
+
+  web-client-dashboard:
+    image: ghcr.io/magicthirst/client_dashboard:latest
+    container_name: web-client-dashboard
+    environment:
+      - VITE_API_URL=http://192.168.0.96:8000
+    ports:
+      - "8080:8000"
+    depends_on:
+      - service-gateway
+
+volumes:
+  volume_service_hosts:
+    external: true
+  volume_service_auth:
+    external: true
+  volume_logs:
+    external: true

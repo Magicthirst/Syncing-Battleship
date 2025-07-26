@@ -20,17 +20,15 @@ public interface IDataBehaviour
         return false;
     }
 
-    bool TryExtractCommand
+    bool TryApplyCommand
     (
         Message message,
         MessageMark mark,
         int sender,
         object state,
-        out Message command,
         out Message snapshot
     )
     {
-        command = message;
         snapshot = message;
         return false;
     }

@@ -94,14 +94,14 @@ public class Session
         }
         else if (mark.HasFlag(Command))
         {
-            if (behaviour.TryExtractCommand(message, mark, connection.Id, state, out var command, out var update))
+            if (behaviour.TryApplyCommand(message, mark, connection.Id, state, out var update))
             {
-                SendToAll(
-                    ReliableMessage(Command).AddMessage(command),
-                    exceptConnection: connection
-                );
                 SendToAll(UnreliableMessage(Update).AddMessage(update));
             }
+            SendToAll(
+                ReliableMessage(Command).AddMessage(message),
+                exceptConnection: connection
+            );
         }
     }
 
