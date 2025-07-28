@@ -89,7 +89,7 @@ public class Session
 
             if (behaviour.TryApplyUpdate(message, connection.Id, state, out var update))
             {
-                SendToAll(UnreliableMessage(Update).AddMessage(update));
+                SendToAll(UnreliableMessage(mark).AddMessage(update));
             }
         }
         else if (mark.HasFlag(Command))
@@ -99,7 +99,7 @@ public class Session
                 SendToAll(UnreliableMessage(Update).AddMessage(update));
             }
             SendToAll(
-                ReliableMessage(Command).AddMessage(message),
+                ReliableMessage(mark).AddMessage(message),
                 exceptConnection: connection
             );
         }
