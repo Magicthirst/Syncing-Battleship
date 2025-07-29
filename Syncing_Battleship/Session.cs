@@ -77,7 +77,8 @@ public class Session
     {
         if (!running) return;
 
-        if (mark.HasFlag(Update))
+        var type = mark & FilterType;
+        if (type == Update)
         {
             var hasNoRightToSendUpdate = !allowNotSotUpdates && !mark.HasFlag(SourceOfTruth);
             var impersonatingSourceOfTruth = mark.HasFlag(SourceOfTruth) && connection.Id == sotId;
@@ -92,7 +93,7 @@ public class Session
                 SendToAll(UnreliableMessage(mark).AddMessage(update));
             }
         }
-        else if (mark.HasFlag(Command))
+        else if (type == Command)
         {
             if (behaviour.TryApplyCommand(message, mark, connection.Id, state, out var update))
             {
@@ -139,9 +140,17 @@ public class Session
         }
     }
 
-    private static Message ReliableMessage(MessageMark action) => Message.Create(MessageSendMode.Reliable, MessageMark.Server | action);
+    private static Message ReliableMessage(MessageMark action)
+    {
+        RiptideLogger.Log(LogType.Debug, $"Sent reliable message mark={MessageMark.Server | action}");
+        return Message.Create(MessageSendMode.Reliable, MessageMark.Server | action);
+    }
 
-    private static Message UnreliableMessage(MessageMark action) => Message.Create(MessageSendMode.Unreliable, MessageMark.Server | action);
+    private static Message UnreliableMessage(MessageMark action)
+    {
+        RiptideLogger.Log(LogType.Debug, $"Sent unreliable message mark={MessageMark.Server | action}");
+        return Message.Create(MessageSendMode.Unreliable, MessageMark.Server | action);
+    }
 
     private class Player
     {
