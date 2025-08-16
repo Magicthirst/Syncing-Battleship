@@ -48,7 +48,7 @@ public class SessionsRouter
         RiptideLogger.Log(LogType.Debug, $"Mark={MessageMarkSupply.DescriptionOf(mark)}");
         if (connectionsSessions.TryGetValue(connection, out var session))
         {
-            RiptideLogger.Log(LogType.Debug, "It is update message");
+            RiptideLogger.Log(LogType.Debug, "It is session message");
             session.Consume(connection, message, mark);
             return;
         }

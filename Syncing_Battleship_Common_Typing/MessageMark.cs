@@ -40,7 +40,10 @@ public enum MessageMark : ushort
     // - Used HTTP error codes, see https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
     Error400 = Error | 0 << MessageMarkSupply.ExtraShift,
     Error403 = Error | 1 << MessageMarkSupply.ExtraShift,
-    Error404 = Error | 2 << MessageMarkSupply.ExtraShift
+    Error404 = Error | 2 << MessageMarkSupply.ExtraShift,
+
+    // COMMAND SUBTYPES
+    Reinit = Command | 0 << MessageMarkSupply.ExtraShift
 }
 
 public static class MessageMarkSupply

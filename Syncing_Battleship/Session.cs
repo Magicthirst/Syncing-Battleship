@@ -3,6 +3,7 @@ using Riptide;
 using Riptide.Utils;
 using Syncing_Battleship_Common_Typing;
 using Util;
+using static System.Linq.Enumerable;
 using static Syncing_Battleship_Common_Typing.MessageMark;
 
 namespace Syncing_Battleship;
@@ -80,9 +81,8 @@ public class Session
         var type = mark & FilterType;
         if (type == Update)
         {
-            var hasNoRightToSendUpdate = !allowNotSotUpdates && !mark.HasFlag(SourceOfTruth);
-            var impersonatingSourceOfTruth = mark.HasFlag(SourceOfTruth) && connection.Id == sotId;
-            if (hasNoRightToSendUpdate || impersonatingSourceOfTruth)
+            var hasNoRightToSendUpdate = mark.HasFlag(SourceOfTruth) ? connection.Id == sotId : allowNotSotUpdates;
+            if (hasNoRightToSendUpdate)
             {
                 connection.Send(UnreliableMessage(Error403));
                 return;
@@ -95,14 +95,16 @@ public class Session
         }
         else if (type == Command)
         {
-            if (behaviour.TryApplyCommand(message, mark, connection.Id, state, out var update))
+            RiptideLogger.Log(LogType.Debug, $"Received bits {StringOfBitsOf(message)}");
+            Message copy/* = ReliableMessage(mark)
+                .AddBytes(PeekBytes(message), includeLength: false)
+                .AddInt(connection.Id)*/;
+
+            if (behaviour.TryApplyCommand(message, mark, connection.Id, state, out copy, out var update))
             {
                 SendToAll(UnreliableMessage(Update).AddMessage(update));
             }
-            SendToAll(
-                ReliableMessage(mark).AddMessage(message),
-                exceptConnection: connection
-            );
+            SendToAll(ReliableMessage(mark).AddMessage(copy), exceptConnection: connection);
         }
     }
 
@@ -128,15 +130,17 @@ public class Session
 
     private void Reinit()
     {
-        var message = ReliableMessage(Update).AddMessage(behaviour.FullMessageOf(state));
+        var message = ReliableMessage(MessageMark.Reinit).AddMessage(behaviour.FullMessageOf(state));
         SendToAll(message);
     }
 
     private void SendToAll(Message message, Connection? exceptConnection = null)
     {
+        RiptideLogger.Log(LogType.Debug, $"Sending bits {StringOfBitsOf(message)}");
         foreach (var player in players.Where(p => p.Connection != exceptConnection))
         {
             player.Connection?.Send(message);
+            RiptideLogger.Log(LogType.Debug, $"Sent message to {player.Connection?.Id} = {player.Id}");
         }
     }
 
@@ -156,5 +160,20 @@ public class Session
     {
         public string Id;
         public Connection? Connection;
+    }
+
+    private static string StringOfBitsOf(Message message) =>
+        string.Join(" ", from v in PeekBytes(message) select v.ToString("b8"));
+
+    private static byte[] PeekBytes(Message message)
+    {
+        var bytes = from i in Range(0, message.BytesInUse) select PeekByte(message, i);
+        return bytes.ToArray();
+    }
+
+    private static byte PeekByte(Message message, int position)
+    {
+        message.PeekBits(8, position * 8, out byte b);
+        return b;
     }
 }

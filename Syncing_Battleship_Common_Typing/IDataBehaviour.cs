@@ -26,10 +26,12 @@ public interface IDataBehaviour
         MessageMark mark,
         int sender,
         object state,
+        out Message copy,
         out Message snapshot
     )
     {
         snapshot = message;
+        copy = message;
         return false;
     }
 }
